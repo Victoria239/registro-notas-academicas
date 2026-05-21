@@ -1,3 +1,8 @@
+NOTA_MINIMA = 0.0
+NOTA_MAXIMA = 5.0
+NOTA_MINIMA_APROBACION = 3.0
+
+
 class SistemaNotas:
     def __init__(self):
         self.notas = []
@@ -15,11 +20,11 @@ class SistemaNotas:
     def determinar_estado(self, nota):
         self._validar_rango_nota(nota)
 
-        if nota >= 3.0:
+        if nota >= NOTA_MINIMA_APROBACION:
             return "Aprobado"
 
         return "Reprobado"
 
     def _validar_rango_nota(self, nota):
-        if nota < 0.0 or nota > 5.0:
+        if nota < NOTA_MINIMA or nota > NOTA_MAXIMA:
             raise ValueError("La nota debe estar entre 0.0 y 5.0")
