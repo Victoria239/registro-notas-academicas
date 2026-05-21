@@ -1,0 +1,18 @@
+[project]
+name = "registro-notas-academicas"
+version = "0.1.0"
+description = "Sistema para gestionar el registro y cálculo de notas académicas"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = []
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.0.0",
+    "pytest-cov>=5.0.0",
+    "behave>=1.2.0",
+]
