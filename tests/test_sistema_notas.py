@@ -62,3 +62,31 @@ def test_debe_aprobar_con_nota_mayor_a_tres():
     resultado = sistema.determinar_estado(4.2)
 
     assert resultado == "Aprobado"
+
+
+def test_debe_calcular_promedio_con_varias_notas():
+    sistema = SistemaNotas()
+    sistema.registrar_nota("Ana", "Matematicas", "2026-1", 4.0)
+    sistema.registrar_nota("Ana", "Fisica", "2026-1", 3.0)
+    sistema.registrar_nota("Ana", "Quimica", "2026-1", 5.0)
+
+    promedio = sistema.calcular_promedio("Ana")
+
+    assert promedio == 4.0
+
+
+def test_debe_calcular_promedio_con_una_sola_nota():
+    sistema = SistemaNotas()
+    sistema.registrar_nota("Ana", "Matematicas", "2026-1", 3.5)
+
+    promedio = sistema.calcular_promedio("Ana")
+
+    assert promedio == 3.5
+
+
+def test_debe_retornar_cero_si_estudiante_no_tiene_notas():
+    sistema = SistemaNotas()
+
+    promedio = sistema.calcular_promedio("Ana")
+
+    assert promedio == 0.0
