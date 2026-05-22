@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-      - principal
   pull_request:
 
 jobs:
@@ -26,5 +25,5 @@ jobs:
       - name: Instalar dependencias
         run: uv sync
 
-      - name: Ejecutar pruebas
-        run: uv run pytest
+      - name: Ejecutar pruebas unitarias y BDD con cobertura
+        run: uv run pytest --cov=src --cov-report=term-missing --cov-fail-under=80
