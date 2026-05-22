@@ -9,6 +9,7 @@ class SistemaNotas:
 
     def registrar_nota(self, estudiante, materia, semestre, nota):
         self._validar_rango_nota(nota)
+        self._validar_nota_duplicada(estudiante, materia, semestre)
 
         self.notas.append({
             "estudiante": estudiante,
@@ -43,3 +44,16 @@ class SistemaNotas:
     def _validar_rango_nota(self, nota):
         if nota < NOTA_MINIMA or nota > NOTA_MAXIMA:
             raise ValueError("La nota debe estar entre 0.0 y 5.0")
+
+    def _validar_nota_duplicada(self, estudiante, materia, semestre):
+        for registro in self.notas:
+            es_misma_nota = (
+                registro["estudiante"] == estudiante
+                and registro["materia"] == materia
+                and registro["semestre"] == semestre
+            )
+
+            if es_misma_nota:
+                raise ValueError(
+                    "Ya existe una nota registrada para esta materia en el mismo semestre"
+                )
