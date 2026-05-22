@@ -5,7 +5,7 @@ from registro_notas.sistema_notas import SistemaNotas
 def test_debe_registrar_nota_valida():
     sistema = SistemaNotas()
 
-    sistema.registrar_nota("Ana", "Matemáticas", "2026-1", 4.0)
+    sistema.registrar_nota("Ana", "Matematicas", "2026-1", 4.0)
 
     assert len(sistema.notas) == 1
 
@@ -14,20 +14,20 @@ def test_debe_rechazar_nota_menor_a_cero():
     sistema = SistemaNotas()
 
     with pytest.raises(ValueError, match="La nota debe estar entre 0.0 y 5.0"):
-        sistema.registrar_nota("Ana", "Matemáticas", "2026-1", -0.1)
+        sistema.registrar_nota("Ana", "Matematicas", "2026-1", -0.1)
 
 
 def test_debe_rechazar_nota_mayor_a_cinco():
     sistema = SistemaNotas()
 
     with pytest.raises(ValueError, match="La nota debe estar entre 0.0 y 5.0"):
-        sistema.registrar_nota("Ana", "Matemáticas", "2026-1", 5.1)
+        sistema.registrar_nota("Ana", "Matematicas", "2026-1", 5.1)
 
 
 def test_debe_aceptar_nota_cero():
     sistema = SistemaNotas()
 
-    sistema.registrar_nota("Ana", "Matemáticas", "2026-1", 0.0)
+    sistema.registrar_nota("Ana", "Matematicas", "2026-1", 0.0)
 
     assert len(sistema.notas) == 1
 
@@ -35,7 +35,7 @@ def test_debe_aceptar_nota_cero():
 def test_debe_aceptar_nota_cinco():
     sistema = SistemaNotas()
 
-    sistema.registrar_nota("Ana", "Matemáticas", "2026-1", 5.0)
+    sistema.registrar_nota("Ana", "Matematicas", "2026-1", 5.0)
 
     assert len(sistema.notas) == 1
 
@@ -90,3 +90,29 @@ def test_debe_retornar_cero_si_estudiante_no_tiene_notas():
     promedio = sistema.calcular_promedio("Ana")
 
     assert promedio == 0.0
+
+
+def test_debe_rechazar_nota_duplicada_misma_materia_y_semestre():
+    sistema = SistemaNotas()
+    sistema.registrar_nota("Ana", "Matematicas", "2026-1", 4.0)
+
+    with pytest.raises(ValueError, match="Ya existe una nota registrada"):
+        sistema.registrar_nota("Ana", "Matematicas", "2026-1", 4.5)
+
+
+def test_debe_permitir_misma_materia_en_semestre_diferente():
+    sistema = SistemaNotas()
+    sistema.registrar_nota("Ana", "Matematicas", "2026-1", 4.0)
+
+    sistema.registrar_nota("Ana", "Matematicas", "2026-2", 4.5)
+
+    assert len(sistema.notas) == 2
+
+
+def test_debe_permitir_materia_diferente_en_mismo_semestre():
+    sistema = SistemaNotas()
+    sistema.registrar_nota("Ana", "Matematicas", "2026-1", 4.0)
+
+    sistema.registrar_nota("Ana", "Fisica", "2026-1", 4.5)
+
+    assert len(sistema.notas) == 2
