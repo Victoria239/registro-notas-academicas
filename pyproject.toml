@@ -19,3 +19,10 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/registro_notas"]
+
+[tool.pytest.ini_options]
+markers = [
+    "smoke: pruebas principales de validación rápida",
+    "critical: pruebas críticas del negocio",
+    "regression: pruebas de regresión"
+]
