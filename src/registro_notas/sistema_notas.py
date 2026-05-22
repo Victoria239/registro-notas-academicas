@@ -25,6 +25,18 @@ class SistemaNotas:
 
         return "Reprobado"
 
+    def calcular_promedio(self, estudiante):
+        notas_estudiante = [
+            registro["nota"]
+            for registro in self.notas
+            if registro["estudiante"] == estudiante
+        ]
+
+        if not notas_estudiante:
+            return 0.0
+
+        return sum(notas_estudiante) / len(notas_estudiante)
+
     def _validar_rango_nota(self, nota):
         if nota < NOTA_MINIMA or nota > NOTA_MAXIMA:
             raise ValueError("La nota debe estar entre 0.0 y 5.0")
