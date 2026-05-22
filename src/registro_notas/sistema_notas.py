@@ -46,14 +46,15 @@ class SistemaNotas:
             raise ValueError("La nota debe estar entre 0.0 y 5.0")
 
     def _validar_nota_duplicada(self, estudiante, materia, semestre):
-        for registro in self.notas:
-            es_misma_nota = (
-                registro["estudiante"] == estudiante
-                and registro["materia"] == materia
-                and registro["semestre"] == semestre
+        if self._existe_nota(estudiante, materia, semestre):
+            raise ValueError(
+                "Ya existe una nota registrada para esta materia en el mismo semestre"
             )
 
-            if es_misma_nota:
-                raise ValueError(
-                    "Ya existe una nota registrada para esta materia en el mismo semestre"
-                )
+    def _existe_nota(self, estudiante, materia, semestre):
+        return any(
+            registro["estudiante"] == estudiante
+            and registro["materia"] == materia
+            and registro["semestre"] == semestre
+            for registro in self.notas
+        )
