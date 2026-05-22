@@ -1,51 +1,49 @@
-# language: es
-Característica: Sistema de Registro de Notas Académicas
-  Como administrador del sistema
-  Quiero registrar y gestionar notas de estudiantes
-  Para mantener un control académico eficiente
+Feature: Registro y consulta de notas académicas
+  Como funcionario académico de la Universidad Regional del Sur
+  quiero registrar y consultar las notas de los estudiantes
+  para conocer su desempeño académico y evitar registros duplicados.
 
-  Escenario: Registrar un nuevo estudiante
-    Dado que tengo un sistema de notas
-    Cuando registro un estudiante con id "001" y nombre "Juan Pérez"
-    Entonces el estudiante debe estar registrado en el sistema
+  Background:
+    Given existe un sistema de registro de notas vacío
 
-  Escenario: Registrar un estudiante duplicado
-    Dado que tengo un sistema de notas
-    Y he registrado un estudiante con id "001" y nombre "Juan Pérez"
-    Cuando intento registrar un estudiante con id "001" y nombre "María López"
-    Entonces el registro debe fallar
+  @critical @smoke
+  Scenario Outline: Determinar si un estudiante aprueba o reprueba una materia
+    When consulto el estado académico para una nota de <nota>
+    Then el sistema debe indicar que el estudiante está "<estado>"
 
-  Escenario: Registrar un nuevo curso
-    Dado que tengo un sistema de notas
-    Cuando registro un curso con id "MAT101" y nombre "Matemáticas I"
-    Entonces el curso debe estar registrado en el sistema
+    Examples:
+      | nota | estado    |
+      | 3.0  | Aprobado  |
+      | 4.5  | Aprobado  |
+      | 2.9  | Reprobado |
 
-  Escenario: Registrar una nota válida
-    Dado que tengo un sistema de notas
-    Y he registrado un estudiante con id "001" y nombre "Juan Pérez"
-    Y he registrado un curso con id "MAT101" y nombre "Matemáticas I"
-    Cuando registro una nota de 8.5 para el estudiante "001" en el curso "MAT101"
-    Entonces la nota debe estar registrada correctamente
+  @regression
+  Scenario: Calcular promedio de un estudiante con varias notas
+    Given el estudiante "Ana" tiene registrada una nota de 4.0 en "Matematicas" para el semestre "2026-1"
+    And el estudiante "Ana" tiene registrada una nota de 3.0 en "Fisica" para el semestre "2026-1"
+    And el estudiante "Ana" tiene registrada una nota de 5.0 en "Quimica" para el semestre "2026-1"
+    When solicito el promedio del estudiante "Ana"
+    Then el promedio debe ser 4.0
 
-  Escenario: Calcular promedio de notas
-    Dado que tengo un sistema de notas
-    Y he registrado un estudiante con id "001" y nombre "Juan Pérez"
-    Y he registrado los siguientes cursos:
-      | id    | nombre         |
-      | MAT101| Matemáticas I  |
-      | FIS101| Física I       |
-      | QUI101| Química I      |
-    Y he registrado las siguientes notas para el estudiante "001":
-      | curso | nota |
-      | MAT101| 8.0  |
-      | FIS101| 7.0  |
-      | QUI101| 9.0  |
-    Cuando calculo el promedio del estudiante "001"
-    Entonces el promedio debe ser 8.0
+  @regression
+  Scenario: Calcular promedio de un estudiante sin notas
+    When solicito el promedio del estudiante "Ana"
+    Then el promedio debe ser 0.0
 
-  Escenario: Registrar nota fuera de rango
-    Dado que tengo un sistema de notas
-    Y he registrado un estudiante con id "001" y nombre "Juan Pérez"
-    Y he registrado un curso con id "MAT101" y nombre "Matemáticas I"
-    Cuando intento registrar una nota de 11.0 para el estudiante "001" en el curso "MAT101"
-    Entonces el registro debe fallar
+  @critical
+  Scenario: Evitar registrar dos notas para la misma materia en el mismo semestre
+    Given el estudiante "Ana" tiene registrada una nota de 4.0 en "Matematicas" para el semestre "2026-1"
+    When intento registrar otra nota de 4.5 para el estudiante "Ana" en "Matematicas" para el semestre "2026-1"
+    Then el sistema debe mostrar el error "Ya existe una nota registrada para esta materia en el mismo semestre"
+
+  @regression
+  Scenario: Permitir registrar la misma materia en semestre diferente
+    Given el estudiante "Ana" tiene registrada una nota de 4.0 en "Matematicas" para el semestre "2026-1"
+    When intento registrar otra nota de 4.5 para el estudiante "Ana" en "Matematicas" para el semestre "2026-2"
+    Then la nota debe quedar registrada correctamente
+
+  @smoke
+  Scenario: Permitir registrar materias diferentes en el mismo semestre
+    Given el estudiante "Ana" tiene registrada una nota de 4.0 en "Matematicas" para el semestre "2026-1"
+    When intento registrar otra nota de 4.5 para el estudiante "Ana" en "Fisica" para el semestre "2026-1"
+    Then la nota debe quedar registrada correctamente
